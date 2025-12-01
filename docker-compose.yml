@@ -1,0 +1,71 @@
+#version: "3.9"
+services:
+  app:
+    build: .
+    env_file: .env
+    ports:
+      - "8080:8080"
+    # монтируем только каталоги функций и, при необходимости, CA-сертификат
+#    volumes:
+#      - /c/Users/rar/Desktop/func/default:/app/functions:ro
+#      - /c/Users/rar/Desktop/func/web:/app/web_functions:ro
+#      - /etc/ssl/certs/YandexCA.crt:ro
+#    logging:
+#      driver: loki
+#      options:
+#        loki-url: "http://localhost:3100/loki/api/v1/push"
+    restart: always
+
+
+  cron:
+    build: .
+    working_dir: /app
+    env_file: .env
+    environment:
+      - PYTHONPATH=/app
+#    volumes:
+#      - .:/app
+#      - /opt/functions-hub/functions:/app/functions
+#      - /opt/functions-hub/web_functions:/app/web_functions
+    command: bash -c "python3 cron_runner.py && cron -f"
+#    logging:
+#      driver: loki
+#      options:
+#        loki-url: "http://localhost:3100/loki/api/v1/push"
+    restart: always
+
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+#    volumes:
+#      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+#      - ./loki/data:/loki/chunks
+#      - ./loki/index:/loki/index
+#      - ./loki/cache:/loki/cache
+
+#  promtail:
+#    image: grafana/promtail:latest
+#    container_name: promtail
+#    volumes:
+#      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+#      - /var/run/docker.sock:/var/run/docker.sock
+##      - ./promtail-config.yml:/etc/promtail/config.yml
+#    command: -config.file=/etc/promtail/config.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+#    volumes:
+#      - grafana-data:/var/lib/grafana
+
+
+
+#volumes:
+#  grafana-data:
+#  loki-data:

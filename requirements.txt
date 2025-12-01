@@ -1,0 +1,7 @@
+fastapi==0.119.1
+uvicorn
+gunicorn
+python-dotenv
+clickhouse-driver
+requests
+PyYAML==6.0.3
