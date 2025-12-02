@@ -90,7 +90,8 @@ try:
                         body = {}
                 print(json.dumps({
                     "ts": datetime.datetime.utcnow().isoformat(),
-                    "type": "function_http_start",
+                    "event": "function_http_start",
+                    "source": "http",
                     "function": _fname,
                     "body": body
                 }))
@@ -99,8 +100,9 @@ try:
                 took = round((time.time() - started) * 1000)
                 print(json.dumps({
                     "ts": datetime.datetime.utcnow().isoformat(),
-                    "type": "function_http_end",
+                    "event": "function_http_end",
                     "function": _fname,
+                    "source": "http",
                     "took_ms": took,
                     "result": result
                 }))
@@ -110,8 +112,9 @@ try:
             except Exception as e:
                 print(json.dumps({
                     "ts": datetime.datetime.utcnow().isoformat(),
-                    "type": "function_http_error",
+                    "event": "function_http_error",
                     "function": _fname,
+                    "source": "http",
                     "error": str(e)
                 }))
                 return JSONResponse({"ok": False, "error": str(e)}, status_code=500)

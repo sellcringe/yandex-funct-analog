@@ -6,11 +6,11 @@ import datetime
 import traceback
 
 
-def log_json(event, **kwargs):
+def log_json(event_name, **kwargs):
     """Structured JSON log compatible with Loki/Grafana."""
     print(json.dumps({
         "ts": datetime.datetime.utcnow().isoformat(),
-        "event": event,
+        "event": event_name,
         **kwargs
     }))
 
@@ -35,7 +35,7 @@ def main():
         sys.exit(f"Invalid --event JSON: {e}")
 
     # определяем источник вызова (cron vs cli)
-    source = "cron" if "CRON_RUN" in os.environ else "cli"
+    source = "cron"
 
     ctx = {
         "source": source,
@@ -43,7 +43,7 @@ def main():
     }
 
     # 🔥 LOG: старт выполнения
-    log_json("function_start", function=args.path, source=source, event=event)
+    log_json("function_start", function=args.path, type=source)
 
     try:
         # основной вызов

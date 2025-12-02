@@ -44,7 +44,7 @@ def build_cron():
             continue
 
         func_path = str(func_dir.relative_to(ROOT)).replace("/", ".")
-        cmd = f"python3 {ROOT}/runner.py {func_path} --event '{{}}'"
+        cmd = f"python3 {ROOT}/runner.py {func_path} --event '{{}}' >> /proc/1/fd/1 2>&1"
 
         lines.append(f"{schedule} {cmd}")
 
